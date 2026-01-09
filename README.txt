@@ -1,130 +1,187 @@
 FraudEngine
 ===========
 
-FraudEngine is a software application designed to detect, flag, and help manage
-potentially fraudulent activity. The project focuses on providing a structured
-engine-based approach to fraud analysis that can be integrated into larger
-systems or used as a standalone service, depending on implementation.
+FraudEngine is a Spring Boot–based fraud detection service that evaluates
+financial transactions using configurable, rule‑based logic.
 
--------------------------------------------------------------------------------
+The application supports both REST (JSON) and ISO‑8583 message processing,
+persists all transactions, and exposes simple APIs for investigation and
+monitoring.
 
-Overview
---------
+This repository contains the full application, including Docker support for
+local development.
 
-FraudEngine aims to:
+---
 
-- Process input data related to transactions or events
-- Apply rule-based and/or logic-driven checks
-- Identify patterns or signals that may indicate fraud
-- Produce outputs that can be acted upon by downstream systems or users
+What FraudEngine Does
+---------------------
 
-The application is intended to be extensible so that fraud logic can evolve
-over time as new patterns and threats emerge.
+FraudEngine:
+- Accepts transactions via REST API
+- Accepts ISO‑8583 messages over TCP
+- Applies multiple fraud detection rules per transaction
+- Flags suspicious transactions
+- Stores all transactions in PostgreSQL
+- Allows querying of flagged and historical transactions
 
--------------------------------------------------------------------------------
+---
 
-Key Concepts
-------------
+Fraud Rules
+-----------
 
-- **Engine-based design**: Fraud detection logic is centralized in an engine
-  that can be updated or extended without rewriting the entire application.
-- **Modular logic**: Fraud rules or checks are designed to be maintainable and
-  reusable.
-- **System integration**: The app is built to fit into broader workflows rather
-  than operate in isolation.
+Fraud detection is implemented as a set of independent rules.
+Each rule can be enabled, disabled, and tuned via configuration.
 
--------------------------------------------------------------------------------
+Currently implemented rules:
 
-Architecture (High-Level)
--------------------------
+- High Amount  
+  Flags transactions above a configurable threshold.
 
-At a high level, FraudEngine consists of:
+- Location Risk  
+  Flags transactions from configured risky locations, with optional whitelist.
 
-- Input handling (receiving events or transaction data)
-- Fraud evaluation logic
-- Result generation (flags, scores, or decisions)
-- Optional persistence or external integration layers
+- Velocity  
+  Flags accounts with a high number of transactions in a short time window.
 
-Exact implementation details depend on the current version of the codebase.
+Rules are evaluated together, and a transaction is flagged if any rule matches.
 
--------------------------------------------------------------------------------
+---
 
-Getting Started
----------------
+Running with Docker (Recommended)
+---------------------------------
 
-1. Clone the repository:
+The easiest way to run FraudEngine is using Docker Compose.
 
-git clone 
+This will start:
+- A PostgreSQL database
+- The FraudEngine application
 
-2. Review the source code and configuration files to understand current setup
-requirements.
+### Requirements
+- Docker
+- Docker Compose
 
-3. Follow any inline documentation or comments in the codebase for build and
-run instructions.
+### Configuration
 
-(Setup steps may vary depending on environment and implementation details.)
+Create a file at:
 
--------------------------------------------------------------------------------
+docker\.env
 
-Configuration
--------------
+Example:
 
-FraudEngine may require configuration to define:
+SERVER_PORT=8080
+ISO8583_PORT=8037
 
-- Fraud rules or thresholds
-- Environment-specific values
-- Runtime behavior
+POSTGRES_DB=frauddb
+POSTGRES_USER=frauduser
+POSTGRES_PASSWORD=Fraud
 
-Refer to source files and configuration templates included in the repository.
+DB_URL=jdbc:postgresql://fraudengine-postgres:5432/frauddb
+DB_USERNAME=frauduser
+DB_PASSWORD=Fraud
 
--------------------------------------------------------------------------------
+FRAUD_HIGH_AMOUNT_ENABLED=true
+FRAUD_HIGH_AMOUNT_THRESHOLD=1000
 
-Usage
+FRAUD_RULES_LOCATION_ENABLED=true
+FRAUD_RULES_LOCATION_RISKY_VALUES=UNKNOWN,RISKY-COUNTRY,NORTH-KOREA,IRAN
+FRAUD_RULES_LOCATION_WHITELIST_VALUES=SOUTH-AFRICA,NAMIBIA,BOTSWANA
+
+FRAUD_RULES_VELOCITY_WINDOW_MINUTES=5
+FRAUD_RULES_VELOCITY_MAX_COUNT=10
+
+### Start the stack
+
+From the project root:
+
+docker compose up --build
+
+The application will be available at:
+- REST API: http://localhost:8080
+- ISO‑8583 TCP listener: port 8037
+
+---
+
+Running Without Docker
+----------------------
+
+Requirements:
+- Java 21
+- Maven
+- PostgreSQL
+
+Build:
+
+mvn clean install
+
+Run:
+
+mvn spring-boot:run
+
+---
+
+REST API Overview
+-----------------
+
+Base path: /api
+
+Create a transaction:
+
+POST /api/transactions
+
+Get flagged transactions:
+
+GET /api/fraud-flags
+
+Search transactions by PAN and date range:
+
+POST /api/transactions/search
+
+
+
+*an example insomnia package is part of this github repo that can showcase possible calls.
+
+
+---
+
+ISO‑8583 Support
+----------------
+
+FraudEngine includes a built‑in ISO‑8583 server.
+
+- Listens on a configurable TCP port (default 8037)
+- Parses incoming messages using jPOS
+- Applies fraud rules
+- Returns a 0210 response
+- Uses response code 00 (approved) or 05 (declined)
+- Can include rule hit information in DE44
+
+
+
+---
+
+Project Structure
+-----------------
+
+capitec.fraudengine
+  controllers     REST APIs
+  iso             ISO‑8583 server and utilities
+  service
+    rules         Fraud rules
+  model           JPA entities
+  repository      Data access
+
+---
+
+Notes
 -----
 
-Typical usage involves:
+This project provides a rule‑based fraud detection foundation.
+It does not guarantee detection of all fraudulent activity and should be
+used as part of a broader risk strategy.
 
-1. Supplying input data to the engine
-2. Running fraud evaluation logic
-3. Handling the resulting output (flags, decisions, or reports)
-
-Exact usage depends on how the engine is wired into your system.
-
--------------------------------------------------------------------------------
-
-Development Status
-------------------
-
-FraudEngine is under ongoing development. Features, structure, and behavior
-may change as the project evolves.
-
--------------------------------------------------------------------------------
-
-Contributing
-------------
-
-Contributions are welcome.
-
-If you plan to contribute:
-- Keep changes focused and well-documented
-- Follow existing code patterns
-- Provide clear commit messages
-
-Formal contribution guidelines may be added later.
-
--------------------------------------------------------------------------------
+---
 
 License
 -------
 
-License information has not been defined yet. All rights reserved unless stated
-otherwise.
-
--------------------------------------------------------------------------------
-
-Disclaimer
-----------
-
-FraudEngine does not guarantee the detection or prevention of all fraudulent
-activity. Fraud detection inherently involves uncertainty and should be used
-as part of a broader risk management strategy.
+No license specified.
