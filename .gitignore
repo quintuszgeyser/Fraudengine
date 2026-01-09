@@ -1,33 +1,61 @@
-HELP.md
+
+# ===== Maven / Java =====
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+*.class
+*.jar
+*.war
+*.ear
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Keep Maven Wrapper in version control so others can build easily
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
 
-### IntelliJ IDEA ###
-.idea
-*.iws
+# ===== Spring Boot / Logs =====
+logs/
+*.log
+*.tmp
+
+# ===== IDEs =====
+# IntelliJ
+.idea/
 *.iml
 *.ipr
+*.iws
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
+# VS Code
 .vscode/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# NetBeans
+.nb-gradle/
+build/
+
+# ===== OS files =====
+.DS_Store
+Thumbs.db
+
+# ===== Docker / Compose envs =====
+# Keep Dockerfile and docker-compose.yml committed
+Dockerfile
+docker-compose.yml
+
+# But ignore environment files containing secrets
+.env
+docker/.env
+docker-compose.override.yml
+
+# ===== Testing / Coverage (if you add these later) =====
+# Uncomment if using coverage tools
+# jacoco.exec
+# site/
+# coverage/
+# surefire-reports/
+# failsafe-reports/
+
+
+node_modules/
+dist/
