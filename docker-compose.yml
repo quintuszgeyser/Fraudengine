@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: fraudengine-postgres
+    environment:
+      POSTGRES_DB: frauddb
+      POSTGRES_USER: frauduser
+      POSTGRES_PASSWORD: Fraud
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U frauduser -d frauddb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  fraudengine:
+    container_name: fraudengine-app
+    image: fraudengine:0.0.2       
+    build:
+      context: .
+      dockerfile: Dockerfile       
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/frauddb
+      SPRING_DATASOURCE_USERNAME: frauduser
+      SPRING_DATASOURCE_PASSWORD: Fraud
+    ports:
+      - "8080:8080"
+      - "8037:8037"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
