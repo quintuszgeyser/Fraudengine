@@ -1,5 +1,5 @@
 
-package capitec.fraudengine.Controllers;
+package capitec.fraudengine.controllers;
 
 import capitec.fraudengine.model.TransactionEntity;
 import capitec.fraudengine.model.dto.TransactionRequest;

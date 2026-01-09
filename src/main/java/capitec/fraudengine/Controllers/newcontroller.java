@@ -1,9 +1,9 @@
-package capitec.fraudengine.Controllers;
+package capitec.fraudengine.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import capitec.fraudengine.Classes.Greetings;
-import capitec.fraudengine.Classes.Transaction;
+import capitec.fraudengine.classes.Greetings;
+import capitec.fraudengine.classes.Transaction;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package capitec.fraudengine.Classes;
+package capitec.fraudengine.classes;
 
 public class Greetings {
 
