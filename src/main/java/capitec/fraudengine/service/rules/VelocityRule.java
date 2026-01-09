@@ -35,7 +35,6 @@ public class VelocityRule implements FraudRule {
 
         long recent = repo.countByPanAndTimestampBetween(tx.getPan(), from, to);
 
-        // Policy: flag if N or more transactions occurred in the window
         return recent >= maxCount;
     }
 

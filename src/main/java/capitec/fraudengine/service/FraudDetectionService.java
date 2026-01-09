@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,4 +76,15 @@ public class FraudDetectionService {
     public List<TransactionEntity> getFlagged() {
         return repo.findByFlaggedTrue();
     }
+
+    public List<TransactionEntity> getTransactionsByPanAndRange(String pan, OffsetDateTime from, OffsetDateTime to) {
+        if (pan == null || pan.isBlank() || from == null || to == null) {
+            throw new IllegalArgumentException("pan, from, and to must be provided");
+        }
+        if (to.isBefore(from)) {
+            throw new IllegalArgumentException("'to' must be equal to or after 'from'");
+        }
+        return repo.findByPanAndTimestampBetweenOrderByTimestampDesc(pan, from, to);
+    }
+
 }

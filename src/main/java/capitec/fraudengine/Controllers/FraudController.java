@@ -3,14 +3,18 @@ package capitec.fraudengine.Controllers;
 
 import capitec.fraudengine.model.TransactionEntity;
 import capitec.fraudengine.model.dto.TransactionRequest;
+import capitec.fraudengine.model.dto.TransactionSearchRequest;
 import capitec.fraudengine.service.FraudDetectionService;
 import capitec.fraudengine.iso.IsoUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @RestController
@@ -113,4 +117,13 @@ public class FraudController {
     public ResponseEntity<List<TransactionEntity>> flags() {
         return ResponseEntity.ok(fraudService.getFlagged());
     }
+
+    @PostMapping(path = "/transactions/search", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<TransactionEntity>> transactionsByPanAndRangeBody(
+            @Valid @RequestBody TransactionSearchRequest req) {
+
+        return ResponseEntity.ok(
+                fraudService.getTransactionsByPanAndRange(req.pan(), req.from(), req.to()));
+    }
+
 }

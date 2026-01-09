@@ -47,7 +47,7 @@ public class Iso87AsciiBBitmapCustomPackager extends ISO87APackagerBBitmap {
     }
 
     /**
-     * Step-by-step unpack with per-DE trace.
+     * unpack with per-DE trace.
      * Prints MTI, bitmap presence, each DE value/consumed bytes; stops on first
      * failure.
      */
