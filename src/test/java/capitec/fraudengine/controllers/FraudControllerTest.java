@@ -1,6 +1,7 @@
 package capitec.fraudengine.controllers;
 
 import capitec.fraudengine.model.TransactionEntity;
+import capitec.fraudengine.repository.TransactionRepository;
 import capitec.fraudengine.service.FraudDetectionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -32,9 +33,15 @@ class FraudControllerTest {
     @MockBean
     private FraudDetectionService fraudDetectionService;
 
-    // ObjectMapper is often required by Spring MVC explicitly
     @MockBean
-    private ObjectMapper objectMapper;
+    private TransactionRepository transactionRepository; // 👈 mock repository
+
+    @MockBean
+    private ObjectMapper objectMapper; // needed by Spring MVC
+
+    // Mock any other beans injected into the controller here
+    // @MockBean
+    // private SomeOtherService someOtherService;
 
     @Test
     void postTransactionReturnsProcessedEntity() throws Exception {
