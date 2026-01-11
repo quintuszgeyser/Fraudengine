@@ -1,14 +1,13 @@
 package capitec.fraudengine.controllers;
 
 import capitec.fraudengine.model.TransactionEntity;
-import capitec.fraudengine.repository.TransactionRepository;
 import capitec.fraudengine.service.FraudDetectionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,12 +18,8 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Web slice test for FraudController.
- * Loads ONLY MVC components and mocks all dependencies.
- */
-@WebMvcTest(controllers = FraudController.class)
-@AutoConfigureMockMvc(addFilters = false) 
+@SpringBootTest
+@AutoConfigureMockMvc
 class FraudControllerTest {
 
     @Autowired
@@ -33,15 +28,8 @@ class FraudControllerTest {
     @MockBean
     private FraudDetectionService fraudDetectionService;
 
-    @MockBean
-    private TransactionRepository transactionRepository; // 👈 mock repository
-
-    @MockBean
-    private ObjectMapper objectMapper; // needed by Spring MVC
-
-    // Mock any other beans injected into the controller here
-    // @MockBean
-    // private SomeOtherService someOtherService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     void postTransactionReturnsProcessedEntity() throws Exception {
