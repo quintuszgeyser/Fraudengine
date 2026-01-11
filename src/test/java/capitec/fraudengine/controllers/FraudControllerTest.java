@@ -1,23 +1,27 @@
+
 package capitec.fraudengine.controllers;
 
-import capitec.fraudengine.model.Transaction;
+import capitec.fraudengine.model.TransactionEntity;
 import capitec.fraudengine.service.FraudDetectionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
 
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(FraudController.class)  // Only loads your controller, not the full context
+@WebMvcTest(FraudController.class)
+@AutoConfigureMockMvc(addFilters = false) // disable security filters if you use Spring Security
 class FraudControllerTest {
 
     @Autowired
@@ -30,43 +34,58 @@ class FraudControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @WithMockUser(username = "testUser", roles = {"USER"})
-    void getFraudFlagsReturnsList() throws Exception {
-        String pan = "4111111111111111";
-        when(fraudDetectionService.getFraudFlags(pan))
-                .thenReturn(Arrays.asList("HIGH_AMOUNT", "SUSPICIOUS_LOCATION"));
+    void postTransactionReturnsProcessedEntity() throws Exception {
+        Mockito.when(fraudDetectionService.process(Mockito.any()))
+               .thenAnswer(invocation -> {
+                   TransactionEntity tx = invocation.getArgument(0);
+                   tx.setId(1L);
+                   tx.setFlagged(true);
+                   tx.setResponseCode("05");
+                   return tx;
+               });
 
-        mockMvc.perform(get("/api/fraud/flags")
-                        .param("pan", pan))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0]").value("HIGH_AMOUNT"))
-                .andExpect(jsonPath("$[1]").value("SUSPICIOUS_LOCATION"));
+        TransactionEntity request = TransactionEntity.builder()
+                .pan("4111111111111111")
+                .amount(new BigDecimal("1500"))
+                .currency("ZAR")
+                .location("UNKNOWN")
+                .category("POS")
+                .timestamp(Instant.parse("2026-01-10T09:00:00Z"))
+                .build();
 
-        verify(fraudDetectionService, times(1)).getFraudFlags(pan);
+        String body = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(post("/api/transactions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+               .andExpect(status().isOk())
+               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+               .andExpect(jsonPath("$.id").value(1))
+               .andExpect(jsonPath("$.flagged").value(true))
+               .andExpect(jsonPath("$.responseCode").value("05"));
     }
 
     @Test
-    @WithMockUser(username = "testUser", roles = {"USER"})
-    void postTransactionReturnsProcessedEntity() throws Exception {
-        Transaction transaction = new Transaction();
-        transaction.setPan("4111111111111111");
-        transaction.setAmount(1500.0);
+    void getFraudFlagsReturnsList() throws Exception {
+        Mockito.when(fraudDetectionService.getFlagged())
+               .thenReturn(List.of(
+                   TransactionEntity.builder()
+                       .id(2L)
+                       .pan("4111111111111111")
+                       .amount(new BigDecimal("1500"))
+                       .currency("ZAR")
+                       .location("UNKNOWN")
+                       .category("POS")
+                       .flagged(true)
+                       .responseCode("05")
+                       .timestamp(Instant.parse("2026-01-10T09:00:00Z"))
+                       .build()
+               ));
 
-        Transaction processed = new Transaction();
-        processed.setPan("4111111111111111");
-        processed.setAmount(1500.0);
-        processed.setFlagged(true);
-
-        when(fraudDetectionService.processTransaction(any(Transaction.class)))
-                .thenReturn(processed);
-
-        mockMvc.perform(post("/api/fraud/transaction")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(transaction)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.flagged").value(true))
-                .andExpect(jsonPath("$.pan").value("4111111111111111"));
-
-        verify(fraudDetectionService, times(1)).processTransaction(any(Transaction.class));
+        mockMvc.perform(get("/api/fraud-flags"))
+               .andExpect(status().isOk())
+               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+               .andExpect(jsonPath("$[0].pan").value("4111111111111111"))
+               .andExpect(jsonPath("$[0].flagged").value(true));
     }
 }
