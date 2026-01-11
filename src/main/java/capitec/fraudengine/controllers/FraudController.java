@@ -8,14 +8,20 @@ import capitec.fraudengine.service.FraudDetectionService;
 import capitec.fraudengine.iso.IsoUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.OffsetDateTime;
 import java.util.List;
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Swagger / OpenAPI annotations (no import for io.swagger.v3.oas.annotations.parameters.RequestBody)
+// ──────────────────────────────────────────────────────────────────────────────
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -24,11 +30,209 @@ public class FraudController {
 
     private final FraudDetectionService fraudService;
 
+    @Operation(summary = "Submit a transaction for fraud evaluation", description = "Processes a transaction and returns whether it is flagged.",
+            // NOTE: Use fully-qualified Swagger RequestBody to avoid import collision with
+            // Spring's RequestBody
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = TransactionRequest.class), examples = {
+                    // ───────────── Simple Insomnia example ─────────────
+                    @ExampleObject(name = "Simple POS", summary = "Minimal payload (Insomnia)", value = """
+                            {
+                              "timestamp": "2026-01-08T14:15:00+00:00",
+                              "pan": "5284971100010063",
+                              "amount": 50000.00,
+                              "currency": "ZAR",
+                              "location": "CPT",
+                              "category": "POS"
+                            }
+                            """),
+                    // ───────────── All fields (Approved) from Insomnia ─────────────
+                    @ExampleObject(name = "All fields - Approved", summary = "Full ISO-style payload that approves", value = """
+                            {
+                                "mti": "0200",
+                                "timestamp": "2026-01-09T10:37:58Z",
+                                "flagged": false,
+                                "category": "ATM",
+                                "id": 28,
+                                "pan": "5284971100131851",
+                                "de3ProcessingCode": "000000",
+                                "amount": 5.00,
+                                "de5AmountReconciliation": null,
+                                "de7TransmissionDateTime": "0109103758",
+                                "de9ConversionRateSettlement": null,
+                                "stan": "030388",
+                                "de12LocalTransactionTime": "123758",
+                                "de13LocalTransactionDate": "0109",
+                                "de14ExpirationDate": "2611",
+                                "de15SettlementDate": "0109",
+                                "de18MerchantType": "5411",
+                                "de22PosEntryMode": "051",
+                                "de23CardSequenceNumber": "000",
+                                "de25PosConditionCode": "00",
+                                "de26PosPinCaptureCode": null,
+                                "de27AuthIdResponseLength": null,
+                                "de28TransactionFeeAmount": null,
+                                "de30TransactionProcessingFeeAmount": null,
+                                "de32AcquiringInstIdCode": "528497",
+                                "de33ForwardingInstIdCode": "330000",
+                                "de35Track2Data": "5284971100131851D2611206000007310000",
+                                "rrn": "600912030388",
+                                "responseCode": "00",
+                                "de40ServiceRestrictionCode": "206",
+                                "terminalId": "BAIBG301",
+                                "merchantId": "000000110030103",
+                                "location": "PWC TEST MERCHANT (TermStellenbosch WeZA",
+                                "de44AdditionalResponseData": "APPROVED",
+                                "de45Track1Data": null,
+                                "de48AdditionalDataPrivate": null,
+                                "currency": "ZAR",
+                                "de52PinData": null,
+                                "de53SecurityControlInfo": null,
+                                "de54AdditionalAmounts": null,
+                                "de56OriginalDataElements": "1510",
+                                "de58AuthorizingAgentInstIdCode": null,
+                                "de59ReservedPrivate": null,
+                                "de66SettlementCode": null,
+                                "de70NetworkMgmtInfoCode": null,
+                                "de74CreditsNumber": null,
+                                "de75CreditsReversalNumber": null,
+                                "de76DebitsNumber": null,
+                                "de77DebitsReversalNumber": null,
+                                "de78TransferNumber": null,
+                                "de79TransferReversalNumber": null,
+                                "de80InquiriesNumber": null,
+                                "de81AuthorizationsNumber": null,
+                                "de82CreditsProcessingFeeAmount": null,
+                                "de83CreditsTransactionFeeAmount": null,
+                                "de84DebitsProcessingFeeAmount": null,
+                                "de85DebitsTransactionFeeAmount": null,
+                                "de86CreditsAmount": null,
+                                "de87CreditsReversalAmount": null,
+                                "de88DebitsAmount": null,
+                                "de89DebitsReversalAmount": null,
+                                "de90OriginalDataElements": null,
+                                "de91FileUpdateCode": null,
+                                "de95ReplacementAmounts": null,
+                                "de9ConversionRateSettlement": null,
+                                "de101FileName": null,
+                                "de102AccountId1": null,
+                                "de103AccountId2": null,
+                                "de110AdditionalDataIso": null,
+                                "de118InvoiceNumber": null,
+                                "de119TransactionDescription": null,
+                                "de123PosDataCode": "A1010151134C100",
+                                "de127AdditionalDataPrivate": null
+                            }
+                            """),
+                    // ───────────── High value (flagged) from Insomnia ─────────────
+                    @ExampleObject(name = "High value – Flagged", summary = "Triggers high-amount rule and is flagged", value = """
+                            {
+                                "mti": "0200",
+                                "timestamp": "2026-01-06T10:15:38Z",
+                                "flagged": true,
+                                "category": "POS",
+                                "id": 56,
+                                "pan": "5284971100010063",
+                                "de3ProcessingCode": "000000",
+                                "amount": 100000.00,
+                                "de5AmountReconciliation": null,
+                                "de7TransmissionDateTime": "0106101538",
+                                "de9ConversionRateSettlement": null,
+                                "stan": "030294",
+                                "de12LocalTransactionTime": "121538",
+                                "de13LocalTransactionDate": "0106",
+                                "de14ExpirationDate": "2611",
+                                "de15SettlementDate": "0106",
+                                "de18MerchantType": "5411",
+                                "de22PosEntryMode": "051",
+                                "de23CardSequenceNumber": "000",
+                                "de25PosConditionCode": "00",
+                                "de26PosPinCaptureCode": null,
+                                "de27AuthIdResponseLength": null,
+                                "de28TransactionFeeAmount": null,
+                                "de30TransactionProcessingFeeAmount": null,
+                                "de32AcquiringInstIdCode": "528497",
+                                "de33ForwardingInstIdCode": "330000",
+                                "de35Track2Data": "5284971100010063D2611226000005220000",
+                                "rrn": "600612030294",
+                                "responseCode": null,
+                                "de40ServiceRestrictionCode": "226",
+                                "terminalId": "BAIBG301",
+                                "merchantId": "000000110030103",
+                                "location": "PWC TEST MERCHANT (TermStellenbosch WeZA",
+                                "de44AdditionalResponseData": null,
+                                "de45Track1Data": null,
+                                "de48AdditionalDataPrivate": null,
+                                "currency": "ZAR",
+                                "de52PinData": null,
+                                "de53SecurityControlInfo": null,
+                                "de54AdditionalAmounts": null,
+                                "de56OriginalDataElements": "1510",
+                                "de58AuthorizingAgentInstIdCode": null,
+                                "de59ReservedPrivate": null,
+                                "de66SettlementCode": null,
+                                "de70NetworkMgmtInfoCode": null,
+                                "de74CreditsNumber": null,
+                                "de75CreditsReversalNumber": null,
+                                "de76DebitsNumber": null,
+                                "de77DebitsReversalNumber": null,
+                                "de78TransferNumber": null,
+                                "de79TransferReversalNumber": null,
+                                "de80InquiriesNumber": null,
+                                "de81AuthorizationsNumber": null,
+                                "de82CreditsProcessingFeeAmount": null,
+                                "de83CreditsTransactionFeeAmount": null,
+                                "de84DebitsProcessingFeeAmount": null,
+                                "de85DebitsTransactionFeeAmount": null,
+                                "de86CreditsAmount": null,
+                                "de87CreditsReversalAmount": null,
+                                "de88DebitsAmount": null,
+                                "de89DebitsReversalAmount": null,
+                                "de90OriginalDataElements": null,
+                                "de91FileUpdateCode": null,
+                                "de95ReplacementAmounts": null,
+                                "de110AdditionalDataIso": null,
+                                "de118InvoiceNumber": null,
+                                "de119TransactionDescription": null,
+                                "de123PosDataCode": "A1010151134C100",
+                                "de127AdditionalDataPrivate": null
+                            }
+                            """)
+            })), responses = {
+                    @ApiResponse(responseCode = "200", description = "Processed transaction response", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = TransactionEntity.class), examples = {
+                            @ExampleObject(name = "Approved response", summary = "Minimal approval response", value = """
+                                    {
+                                      "id": 28,
+                                      "flagged": false,
+                                      "responseCode": "00",
+                                      "pan": "5284971100131851",
+                                      "amount": 5.00,
+                                      "currency": "ZAR",
+                                      "timestamp": "2026-01-09T10:37:58Z",
+                                      "category": "ATM",
+                                      "location": "PWC TEST MERCHANT (TermStellenbosch WeZA"
+                                    }
+                                    """),
+                            @ExampleObject(name = "Flagged response", summary = "Decline due to risk rules", value = """
+                                    {
+                                      "id": 56,
+                                      "flagged": true,
+                                      "responseCode": "05",
+                                      "pan": "5284971100010063",
+                                      "amount": 100000.00,
+                                      "currency": "ZAR",
+                                      "timestamp": "2026-01-06T10:15:38Z",
+                                      "category": "POS",
+                                      "location": "UNKNOWN"
+                                    }
+                                    """)
+                    }))
+            })
     @PostMapping(path = "/transactions", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TransactionEntity> create(@Valid @RequestBody TransactionRequest req) {
+    public ResponseEntity<TransactionEntity> create(
+            // Keep Spring's RequestBody for binding
+            @Valid @org.springframework.web.bind.annotation.RequestBody TransactionRequest req) {
 
-        // Defensive: if someone ever sends numeric ISO-4217 (e.g., "710"), convert to
-        // alpha-3 ("ZAR")
+        // Defensive: numeric ISO-4217 -> alpha-3 ("710" -> "ZAR")
         String currency = req.getCurrency();
         if (currency != null && currency.matches("^\\d{3}$")) {
             currency = IsoUtils.currencyNumericToAlpha(currency);
@@ -51,7 +255,6 @@ public class FraudController {
                 .de13LocalTransactionDate(req.getDe13LocalTransactionDate())
                 .de14ExpirationDate(req.getDe14ExpirationDate())
                 .de15SettlementDate(req.getDe15SettlementDate())
-                // .de16ConversionDate(req.getDe16ConversionDate())
                 .de18MerchantType(req.getDe18MerchantType())
                 .de22PosEntryMode(req.getDe22PosEntryMode())
                 .de23CardSequenceNumber(req.getDe23CardSequenceNumber())
@@ -113,17 +316,41 @@ public class FraudController {
         return ResponseEntity.ok(fraudService.process(tx));
     }
 
+    @Operation(summary = "List flagged transactions", responses = {
+            @ApiResponse(responseCode = "200", description = "Array of flagged transactions", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = TransactionEntity.class), examples = @ExampleObject(name = "Flagged list example", value = """
+                    [
+                      {
+                        "id": 56,
+                        "flagged": true,
+                        "responseCode": "05",
+                        "pan": "5284971100010063",
+                        "amount": 100000.00,
+                        "currency": "ZAR",
+                        "timestamp": "2026-01-06T10:15:38Z",
+                        "category": "POS",
+                        "location": "UNKNOWN"
+                      }
+                    ]
+                    """)))
+    })
     @GetMapping("/fraud-flags")
     public ResponseEntity<List<TransactionEntity>> flags() {
         return ResponseEntity.ok(fraudService.getFlagged());
     }
 
+    @Operation(summary = "Search transactions by PAN and time window", requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = TransactionSearchRequest.class), examples = @ExampleObject(name = "Search window example", value = """
+            {
+              "pan": "5284971100131851",
+              "from": "2026-01-05T14:15:00+00:00",
+              "to":   "2026-01-09T14:15:00+00:00"
+            }
+            """))), responses = {
+            @ApiResponse(responseCode = "200", description = "List of matching transactions", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = TransactionEntity.class)))
+    })
     @PostMapping(path = "/transactions/search", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<TransactionEntity>> transactionsByPanAndRangeBody(
-            @Valid @RequestBody TransactionSearchRequest req) {
-
+            @Valid @org.springframework.web.bind.annotation.RequestBody TransactionSearchRequest req) {
         return ResponseEntity.ok(
                 fraudService.getTransactionsByPanAndRange(req.pan(), req.from(), req.to()));
     }
-
 }
