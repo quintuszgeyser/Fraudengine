@@ -11,7 +11,7 @@ public class IsoTestClient {
         String host = System.getProperty("iso.host", "localhost");
         int port = Integer.getInteger("iso.port", 8037);
 
-        ISO87APackager packager = new ISO87APackager(); // MUST match server packager
+        ISO87APackager packager = new ISO87APackager();
         ASCIIChannel channel = new ASCIIChannel(host, port, packager);
 
         channel.connect();

@@ -59,7 +59,7 @@ public class IsoMessageHandler {
     tx.setDe13LocalTransactionDate(get(req, 13));
     tx.setDe14ExpirationDate(get(req, 14));
     tx.setDe15SettlementDate(get(req, 15));
-    // If you added DE16 to the entity, you can set it here:
+
     // tx.setDe16ConversionDate(get(req, 16));
     tx.setDe18MerchantType(get(req, 18));
     tx.setDe22PosEntryMode(get(req, 22));

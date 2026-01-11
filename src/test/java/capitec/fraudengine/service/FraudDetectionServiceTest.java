@@ -43,7 +43,6 @@ class FraudDetectionServiceTest {
             }
         };
 
-        // IMPORTANT: List<FraudRule>, not List<Object>
         FraudDetectionService service = new FraudDetectionService(repo, List.of(ruleFalse, ruleTrue));
 
         TransactionEntity tx = TransactionEntity.builder()
