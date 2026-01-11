@@ -9,12 +9,14 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+// If you want to migrate later: import org.springframework.test.context.mockito.MockitoBean;
+// For now, MockBean is fine (deprecated but still works on Boot 3.4.x).
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -50,7 +52,7 @@ class FraudControllerTest {
                 .currency("ZAR")
                 .location("UNKNOWN")
                 .category("POS")
-                .timestamp(Instant.parse("2026-01-10T09:00:00Z"))
+                .timestamp(OffsetDateTime.parse("2026-01-10T09:00:00Z")) // ✅ OffsetDateTime
                 .build();
 
         String body = objectMapper.writeValueAsString(request);
@@ -78,7 +80,7 @@ class FraudControllerTest {
                        .category("POS")
                        .flagged(true)
                        .responseCode("05")
-                       .timestamp(Instant.parse("2026-01-10T09:00:00Z"))
+                       .timestamp(OffsetDateTime.parse("2026-01-10T09:00:00Z")) // ✅ OffsetDateTime
                        .build()
                ));
 
