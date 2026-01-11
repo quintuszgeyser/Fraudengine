@@ -73,7 +73,7 @@ This will start:
  DOCKER CONFIGURATION
 -----------------------------------
 
-Create a file named:
+Ensure there is a file named, here config can be easily configured for the fraud rules:
 
   docker/.env
 
@@ -105,8 +105,13 @@ Example configuration:
 -----------------------------------
 
 From the project root directory:
+*Ensure Docker is running.
 
-  docker compose up --build
+1)Build the SNAPSHOT JAR (tests included)
+Run:   mvnw clean package
+  
+2)Then run docker:
+Run:  docker compose up --build
 
 Application endpoints:
 
