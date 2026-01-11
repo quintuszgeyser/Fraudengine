@@ -73,7 +73,7 @@ This will start:
  DOCKER CONFIGURATION
 -----------------------------------
 
-Ensure there is a file named, here config can be easily configured for the fraud rules:
+Ensure there is a file named  docker/.env , here config can be easily configured for the fraud rules:
 
   docker/.env
 
