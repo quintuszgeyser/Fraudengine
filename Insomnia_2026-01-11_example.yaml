@@ -1,0 +1,555 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Fraudengine
+meta:
+  id: wrk_5803cc67060d4f028d171851ad7ea4a1
+  created: 1765370934892
+  modified: 1765373515633
+  description: ""
+collection:
+  - url: http://localhost:8080/api/transactions
+    name: SendTransaction
+    meta:
+      id: req_92f0a666e9b94d23acdc93e6e001289e
+      created: 1765370943905
+      modified: 1767952659587
+      isPrivate: false
+      description: ""
+      sortKey: -1765370943905
+    method: POST
+    body:
+      mimeType: application/json
+      text: |
+        
+        {
+          "timestamp": "2026-01-08T14:15:00+00:00",
+          "pan": "5284971100010063",
+          "amount": 50000.00,
+          "currency": "ZAR",
+          "location": "CPT",
+          "category": "POS"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+      - name: "Content-Type: "
+        value: application/json
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/fraud-flags
+    name: Get Fraudulent transactions
+    meta:
+      id: req_ec863da77b40404d97815ff078d3a6cd
+      created: 1767697438572
+      modified: 1767697533638
+      isPrivate: false
+      description: ""
+      sortKey: -1767697438572
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.2.0
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/transactions
+    name: SendTransaction_all_fields_Approved
+    meta:
+      id: req_944d54e881914298b7d77fa7084c2cd5
+      created: 1767697884573
+      modified: 1767955216116
+      isPrivate: false
+      description: ""
+      sortKey: -1759653165253.625
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        		"mti": "0200",
+        		"timestamp": "2026-01-09T10:37:58Z",
+        		"flagged": false,
+        		"category": "ATM",
+        		"id": 28,
+        		"pan": "5284971100131851",
+        		"de3ProcessingCode": "000000",
+        		"amount": 5.00,
+        		"de5AmountReconciliation": null,
+        		"de7TransmissionDateTime": "0109103758",
+        		"de9ConversionRateSettlement": null,
+        		"stan": "030388",
+        		"de12LocalTransactionTime": "123758",
+        		"de13LocalTransactionDate": "0109",
+        		"de14ExpirationDate": "2611",
+        		"de15SettlementDate": "0109",
+        		"de18MerchantType": "5411",
+        		"de22PosEntryMode": "051",
+        		"de23CardSequenceNumber": "000",
+        		"de25PosConditionCode": "00",
+        		"de26PosPinCaptureCode": null,
+        		"de27AuthIdResponseLength": null,
+        		"de28TransactionFeeAmount": null,
+        		"de30TransactionProcessingFeeAmount": null,
+        		"de32AcquiringInstIdCode": "528497",
+        		"de33ForwardingInstIdCode": "330000",
+        		"de35Track2Data": "5284971100131851D2611206000007310000",
+        		"rrn": "600912030388",
+        		"responseCode": "00",
+        		"de40ServiceRestrictionCode": "206",
+        		"terminalId": "BAIBG301",
+        		"merchantId": "000000110030103",
+        		"location": "PWC TEST MERCHANT (TermStellenbosch WeZA",
+        		"de44AdditionalResponseData": "APPROVED",
+        		"de45Track1Data": null,
+        		"de48AdditionalDataPrivate": null,
+        		"currency": "ZAR",
+        		"de52PinData": null,
+        		"de53SecurityControlInfo": null,
+        		"de54AdditionalAmounts": null,
+        		"de56OriginalDataElements": "1510",
+        		"de58AuthorizingAgentInstIdCode": null,
+        		"de59ReservedPrivate": null,
+        		"de66SettlementCode": null,
+        		"de70NetworkMgmtInfoCode": null,
+        		"de74CreditsNumber": null,
+        		"de75CreditsReversalNumber": null,
+        		"de76DebitsNumber": null,
+        		"de77DebitsReversalNumber": null,
+        		"de78TransferNumber": null,
+        		"de79TransferReversalNumber": null,
+        		"de80InquiriesNumber": null,
+        		"de81AuthorizationsNumber": null,
+        		"de82CreditsProcessingFeeAmount": null,
+        		"de83CreditsTransactionFeeAmount": null,
+        		"de84DebitsProcessingFeeAmount": null,
+        		"de85DebitsTransactionFeeAmount": null,
+        		"de86CreditsAmount": null,
+        		"de87CreditsReversalAmount": null,
+        		"de88DebitsAmount": null,
+        		"de89DebitsReversalAmount": null,
+        		"de90OriginalDataElements": null,
+        		"de91FileUpdateCode": null,
+        		"de95ReplacementAmounts": null,
+        		"de101FileName": null,
+        		"de102AccountId1": null,
+        		"de103AccountId2": null,
+        		"de110AdditionalDataIso": null,
+        		"de118InvoiceNumber": null,
+        		"de119TransactionDescription": null,
+        		"de123PosDataCode": "A1010151134C100",
+        		"de127AdditionalDataPrivate": null
+        	}
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+      - name: "Content-Type: "
+        value: application/json
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/transactions
+    name: SendTransaction_all_fields_High_Value_rule
+    meta:
+      id: req_edf06fdc70b04a4b8a74f878c6272f9b
+      created: 1767698533301
+      modified: 1767702372178
+      isPrivate: false
+      description: ""
+      sortKey: -1756794275927.9375
+    method: POST
+    body:
+      mimeType: application/json
+      text: |
+        
+
+        {
+        		"mti": "0200",
+        		"timestamp": "2026-01-06T10:15:38Z",
+        		"flagged": true,
+        		"category": "POS",
+        		"id": 56,
+        		"pan": "5284971100010063",
+        		"de3ProcessingCode": "000000",
+        		"amount": 100000.00,
+        		"de5AmountReconciliation": null,
+        		"de7TransmissionDateTime": "0106101538",
+        		"de9ConversionRateSettlement": null,
+        		"stan": "030294",
+        		"de12LocalTransactionTime": "121538",
+        		"de13LocalTransactionDate": "0106",
+        		"de14ExpirationDate": "2611",
+        		"de15SettlementDate": "0106",
+        		"de18MerchantType": "5411",
+        		"de22PosEntryMode": "051",
+        		"de23CardSequenceNumber": "000",
+        		"de25PosConditionCode": "00",
+        		"de26PosPinCaptureCode": null,
+        		"de27AuthIdResponseLength": null,
+        		"de28TransactionFeeAmount": null,
+        		"de30TransactionProcessingFeeAmount": null,
+        		"de32AcquiringInstIdCode": "528497",
+        		"de33ForwardingInstIdCode": "330000",
+        		"de35Track2Data": "5284971100010063D2611226000005220000",
+        		"rrn": "600612030294",
+        		"responseCode": null,
+        		"de40ServiceRestrictionCode": "226",
+        		"terminalId": "BAIBG301",
+        		"merchantId": "000000110030103",
+        		"location": "PWC TEST MERCHANT (TermStellenbosch WeZA",
+        		"de44AdditionalResponseData": null,
+        		"de45Track1Data": null,
+        		"de48AdditionalDataPrivate": null,
+        		"currency": "ZAR",
+        		"de52PinData": null,
+        		"de53SecurityControlInfo": null,
+        		"de54AdditionalAmounts": null,
+        		"de56OriginalDataElements": "1510",
+        		"de58AuthorizingAgentInstIdCode": null,
+        		"de59ReservedPrivate": null,
+        		"de66SettlementCode": null,
+        		"de70NetworkMgmtInfoCode": null,
+        		"de74CreditsNumber": null,
+        		"de75CreditsReversalNumber": null,
+        		"de76DebitsNumber": null,
+        		"de77DebitsReversalNumber": null,
+        		"de78TransferNumber": null,
+        		"de79TransferReversalNumber": null,
+        		"de80InquiriesNumber": null,
+        		"de81AuthorizationsNumber": null,
+        		"de82CreditsProcessingFeeAmount": null,
+        		"de83CreditsTransactionFeeAmount": null,
+        		"de84DebitsProcessingFeeAmount": null,
+        		"de85DebitsTransactionFeeAmount": null,
+        		"de86CreditsAmount": null,
+        		"de87CreditsReversalAmount": null,
+        		"de88DebitsAmount": null,
+        		"de89DebitsReversalAmount": null,
+        		"de90OriginalDataElements": null,
+        		"de91FileUpdateCode": null,
+        		"de95ReplacementAmounts": null,
+        		"de101FileName": null,
+        		"de102AccountId1": null,
+        		"de103AccountId2": null,
+        		"de110AdditionalDataIso": null,
+        		"de118InvoiceNumber": null,
+        		"de119TransactionDescription": null,
+        		"de123PosDataCode": "A1010151134C100",
+        		"de127AdditionalDataPrivate": null
+        	}
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+      - name: "Content-Type: "
+        value: application/json
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/transactions
+    name: SendTransaction_all_fields_Location_rule_High_Value_rule
+    meta:
+      id: req_510190fb49e841909be2ca0710a326f1
+      created: 1767698592401
+      modified: 1767702379680
+      isPrivate: false
+      description: ""
+      sortKey: -1755364831265.0938
+    method: POST
+    body:
+      mimeType: application/json
+      text: |
+        
+
+        {
+        		"mti": "0200",
+        		"timestamp": "2026-01-06T10:15:38Z",
+        		"flagged": true,
+        		"category": "POS",
+        		"id": 56,
+        		"pan": "5284971100010063",
+        		"de3ProcessingCode": "000000",
+        		"amount": 100000.00,
+        		"de5AmountReconciliation": null,
+        		"de7TransmissionDateTime": "0106101538",
+        		"de9ConversionRateSettlement": null,
+        		"stan": "030294",
+        		"de12LocalTransactionTime": "121538",
+        		"de13LocalTransactionDate": "0106",
+        		"de14ExpirationDate": "2611",
+        		"de15SettlementDate": "0106",
+        		"de18MerchantType": "5411",
+        		"de22PosEntryMode": "051",
+        		"de23CardSequenceNumber": "000",
+        		"de25PosConditionCode": "00",
+        		"de26PosPinCaptureCode": null,
+        		"de27AuthIdResponseLength": null,
+        		"de28TransactionFeeAmount": null,
+        		"de30TransactionProcessingFeeAmount": null,
+        		"de32AcquiringInstIdCode": "528497",
+        		"de33ForwardingInstIdCode": "330000",
+        		"de35Track2Data": "5284971100010063D2611226000005220000",
+        		"rrn": "600612030294",
+        		"responseCode": null,
+        		"de40ServiceRestrictionCode": "226",
+        		"terminalId": "BAIBG301",
+        		"merchantId": "000000110030103",
+        		"location": "UNKNOWN",
+        		"de44AdditionalResponseData": null,
+        		"de45Track1Data": null,
+        		"de48AdditionalDataPrivate": null,
+        		"currency": "ZAR",
+        		"de52PinData": null,
+        		"de53SecurityControlInfo": null,
+        		"de54AdditionalAmounts": null,
+        		"de56OriginalDataElements": "1510",
+        		"de58AuthorizingAgentInstIdCode": null,
+        		"de59ReservedPrivate": null,
+        		"de66SettlementCode": null,
+        		"de70NetworkMgmtInfoCode": null,
+        		"de74CreditsNumber": null,
+        		"de75CreditsReversalNumber": null,
+        		"de76DebitsNumber": null,
+        		"de77DebitsReversalNumber": null,
+        		"de78TransferNumber": null,
+        		"de79TransferReversalNumber": null,
+        		"de80InquiriesNumber": null,
+        		"de81AuthorizationsNumber": null,
+        		"de82CreditsProcessingFeeAmount": null,
+        		"de83CreditsTransactionFeeAmount": null,
+        		"de84DebitsProcessingFeeAmount": null,
+        		"de85DebitsTransactionFeeAmount": null,
+        		"de86CreditsAmount": null,
+        		"de87CreditsReversalAmount": null,
+        		"de88DebitsAmount": null,
+        		"de89DebitsReversalAmount": null,
+        		"de90OriginalDataElements": null,
+        		"de91FileUpdateCode": null,
+        		"de95ReplacementAmounts": null,
+        		"de101FileName": null,
+        		"de102AccountId1": null,
+        		"de103AccountId2": null,
+        		"de110AdditionalDataIso": null,
+        		"de118InvoiceNumber": null,
+        		"de119TransactionDescription": null,
+        		"de123PosDataCode": "A1010151134C100",
+        		"de127AdditionalDataPrivate": null
+        	}
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+      - name: "Content-Type: "
+        value: application/json
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/transactions
+    name: SendTransaction_all_fields_Location_rule
+    meta:
+      id: req_f2cad90314344723a923999dfeb1ff99
+      created: 1767698647466
+      modified: 1767702385180
+      isPrivate: false
+      description: ""
+      sortKey: -1754650108933.6719
+    method: POST
+    body:
+      mimeType: application/json
+      text: |
+        
+
+        {
+        		"mti": "0200",
+        		"timestamp": "2026-01-06T10:15:38Z",
+        		"flagged": true,
+        		"category": "POS",
+        		"id": 56,
+        		"pan": "5284971100010063",
+        		"de3ProcessingCode": "000000",
+        		"amount": 10.00,
+        		"de5AmountReconciliation": null,
+        		"de7TransmissionDateTime": "0106101538",
+        		"de9ConversionRateSettlement": null,
+        		"stan": "030294",
+        		"de12LocalTransactionTime": "121538",
+        		"de13LocalTransactionDate": "0106",
+        		"de14ExpirationDate": "2611",
+        		"de15SettlementDate": "0106",
+        		"de18MerchantType": "5411",
+        		"de22PosEntryMode": "051",
+        		"de23CardSequenceNumber": "000",
+        		"de25PosConditionCode": "00",
+        		"de26PosPinCaptureCode": null,
+        		"de27AuthIdResponseLength": null,
+        		"de28TransactionFeeAmount": null,
+        		"de30TransactionProcessingFeeAmount": null,
+        		"de32AcquiringInstIdCode": "528497",
+        		"de33ForwardingInstIdCode": "330000",
+        		"de35Track2Data": "5284971100010063D2611226000005220000",
+        		"rrn": "600612030294",
+        		"responseCode": null,
+        		"de40ServiceRestrictionCode": "226",
+        		"terminalId": "BAIBG301",
+        		"merchantId": "000000110030103",
+        		"location": "UNKNOWN",
+        		"de44AdditionalResponseData": null,
+        		"de45Track1Data": null,
+        		"de48AdditionalDataPrivate": null,
+        		"currency": "ZAR",
+        		"de52PinData": null,
+        		"de53SecurityControlInfo": null,
+        		"de54AdditionalAmounts": null,
+        		"de56OriginalDataElements": "1510",
+        		"de58AuthorizingAgentInstIdCode": null,
+        		"de59ReservedPrivate": null,
+        		"de66SettlementCode": null,
+        		"de70NetworkMgmtInfoCode": null,
+        		"de74CreditsNumber": null,
+        		"de75CreditsReversalNumber": null,
+        		"de76DebitsNumber": null,
+        		"de77DebitsReversalNumber": null,
+        		"de78TransferNumber": null,
+        		"de79TransferReversalNumber": null,
+        		"de80InquiriesNumber": null,
+        		"de81AuthorizationsNumber": null,
+        		"de82CreditsProcessingFeeAmount": null,
+        		"de83CreditsTransactionFeeAmount": null,
+        		"de84DebitsProcessingFeeAmount": null,
+        		"de85DebitsTransactionFeeAmount": null,
+        		"de86CreditsAmount": null,
+        		"de87CreditsReversalAmount": null,
+        		"de88DebitsAmount": null,
+        		"de89DebitsReversalAmount": null,
+        		"de90OriginalDataElements": null,
+        		"de91FileUpdateCode": null,
+        		"de95ReplacementAmounts": null,
+        		"de101FileName": null,
+        		"de102AccountId1": null,
+        		"de103AccountId2": null,
+        		"de110AdditionalDataIso": null,
+        		"de118InvoiceNumber": null,
+        		"de119TransactionDescription": null,
+        		"de123PosDataCode": "A1010151134C100",
+        		"de127AdditionalDataPrivate": null
+        	}
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+      - name: "Content-Type: "
+        value: application/json
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/transactions/search
+    name: GetTransactionByTimeBetween
+    meta:
+      id: req_9fe573f7c32a4fee92db1af5dfd48a4a
+      created: 1767953606289
+      modified: 1767955104066
+      isPrivate: false
+      description: ""
+      sortKey: -1762512054579.3125
+    method: POST
+    body:
+      mimeType: application/json
+      text: |
+        
+        {
+        	"pan": "5284971100131851",
+          "from": "2026-01-05T14:15:00+00:00",
+        	"to": "2026-01-09T14:15:00+00:00"
+
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.1.0
+        description: ""
+        disabled: false
+      - name: "Content-Type: "
+        value: application/json
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_bab9794a8576e5f4c0f1b1e095c78c5baa13fac9
+    created: 1765370934914
+    modified: 1765370934914
+environments:
+  name: Base Environment
+  meta:
+    id: env_bab9794a8576e5f4c0f1b1e095c78c5baa13fac9
+    created: 1765370934910
+    modified: 1765370934910
+    isPrivate: false
