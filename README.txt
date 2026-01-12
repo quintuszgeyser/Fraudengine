@@ -111,7 +111,7 @@ From the project root directory:
 Run:   mvnw clean package
   
 2)Then run docker:
-Run:  docker compose up --build
+Run:  docker-compose up --build
 
 Application endpoints:
 
